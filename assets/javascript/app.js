@@ -3,12 +3,13 @@
 
 var intervalId;
 var currentQueIndex = 0;
-const initialTime = 3;
+const initialTime = 10;
 var totalCorrect = 0;
 var totalWrong = 0;
 var totalTimeOut = 0;
 var time = 0;
 const nextTime = 3000;
+//Set of questions, options and answers
 var listOfQuestions = [
     {
         question: "What was the last song John Lennon played for a paying audience?",
@@ -42,8 +43,57 @@ var listOfQuestions = [
         option4: "I saw her standing there",
         answer: "Yesterday"
     },
+    {
+        question: "Which Beatle crossed Abbey Road first?",
+        option1: "John",
+        option2: "Ringo",
+        option3: "Paul",
+        option4: "George",
+        answer: "John"
+    },
+    {
+        question: "What was the Beatles' first single??",
+        option1: "Twist and Shout",
+        option2: "I saw her standing there",
+        option3: "Love me do",
+        option4: "Please Please me",
+        answer: "Love me do"
+    },
+    {
+        question: "What was the Beatles' first film?",
+        option1: "Help",
+        option2: "Yellow Submarine",
+        option3: "Magical Mystery Tour",
+        option4: "A Hard day's night",
+        answer: "A Hard day's night"
+    },
+    {
+        question: "Which of the Beatles had a magic piano?",
+        option1: "George",
+        option2: "John",
+        option3: "Paul",
+        option4: "Ringo",
+        answer: "Paul"
+    },
+    {
+        question: "Which Beatles song was dedicated to John's son?",
+        option1: "I want to hold your hand",
+        option2: "Hey Jude",
+        option3: "Yesterday",
+        option4: "I saw her standing there",
+        answer: "Hey Jude"
+    },
+    {
+        question: "Who inspired John Lennon to write Across the Universe?",
+        option1: "Yoko Ono",
+        option2: "Julia Lennon",
+        option3: "Paul McCartney",
+        option4: "Cynthia Lennon",
+        answer: "Cynthia Lennon"
+    },
 
 ]
+
 var trivia = {
     //set clock to not run until the function is called
     clockRunning: false,
@@ -62,17 +112,9 @@ var trivia = {
         time--
         $("#message").text("Time Remaining " + time);
         if (time === 0) {
-            console.log(time + " is now 0");
             trivia.stopClock();
-            console.log("current index " + currentQueIndex);
-            console.log("list of questions length " + listOfQuestions.length);
-
             trivia.showOutOfTime();
-            console.log("Increment current index from count()");
-            // currentQueIndex++;
         };
-
-
     },
 
     //stops time clock
@@ -83,9 +125,7 @@ var trivia = {
 
     //starts the game and pulls the first set of questions
     startGame: function () {
-        // trivia.questionTimer();
         trivia.updateQuestion();
-
 
     },
 
@@ -95,11 +135,7 @@ var trivia = {
         $("#question").css("font-size", "30px");
         $(".options").show();
         $(".image-container").hide();
-        console.log("clock is running " + trivia.clockRunning);
-        console.log("total correct " + totalCorrect);
-        console.log("total wrong " + totalWrong);
-        console.log("total out of time " + totalTimeOut);
-
+    
         trivia.questionTimer();
         $("#question").text(listOfQuestions[currentQueIndex].question);
 
@@ -116,23 +152,15 @@ var trivia = {
     checkAnswer: function (selected, answer) {
 
         if (selected === answer) {
-
-            console.log("you win");
             trivia.stopClock();
             trivia.showCorrect();
         } else {
-            console.log("you losse");
             trivia.stopClock();
             trivia.showWrong();
         }
-
-        console.log("current index " + currentQueIndex);
-        console.log("list of questions length " + listOfQuestions.length);
-       
     },
-   
+    //Shows correct anwer page
     showCorrect: function () {
-        console.log("Switch to correctPage");
         totalCorrect++;
         $("#question").text("Correct!");
         $("#question").css("font-size", "50px");
@@ -142,8 +170,8 @@ var trivia = {
         trivia.checkForNextPage();
     },
 
+    //Shows wrong answer page
     showWrong: function () {
-        console.log("Switch to wrongePage");
         totalWrong++;
         $("#question").text("Wrong!");
         $("#question").css("font-size", "50px");
@@ -155,9 +183,9 @@ var trivia = {
 
     },
 
+    //shows Out of time screen
     showOutOfTime: function () {
         totalTimeOut++;
-        console.log("Switch to out of time page");
         $("#question").text("Out Of Time!");
         $("#question").css("font-size", "50px");
         $(".options").hide();
@@ -168,8 +196,8 @@ var trivia = {
 
     },
 
+    //shows End of Game screen and score and prompts to start again
     showEndOfGame: function () {
-        console.log("Switch to game end page");
         $(".options").hide();
         $(".results").show();
         $("#question").text("All done, here is how you did");
@@ -179,23 +207,21 @@ var trivia = {
         $("#result3").text("Unanswered: " + totalTimeOut);
         $("#result4").hide();
         $(".image-container").hide();
-        $(".gameover").show();
+        $(".gameover").html("<h1>Start Over?</h1>");
     },
 
 
 
-    //Checks for end of game or next page
+    //Checks for next or end of game or next page
     checkForNextPage: function () {
 
         if (currentQueIndex >= listOfQuestions.length - 1) {
-            console.log("current index is greater than or equal to list of que")
             trivia.stopClock();
             setTimeout(function () {
                 trivia.showEndOfGame();
             }, nextTime)
 
         } else {
-            console.log("Increment current index from checkAnswer()");
             currentQueIndex++;
             setTimeout(function () {
                 trivia.updateQuestion();
@@ -205,41 +231,54 @@ var trivia = {
 
     },
 
-    resetGame: function () { }
+    //Resets game to question 1
+    resetGame: function () { 
+        totalCorrect = 0;
+        totalWrong = 0;
+        totalTimeOut = 0;
+        time = 0;
+        currentQueIndex = 0;
+        trivia.updateQuestion();
+        $(".results").hide();
+        $(".gameover").empty();
+
+    }
 };
 
-//Hides the play again button
-window.onload = function () {
-    $(".gameover").hide();
 
-};
-
+//Start buttons calls the beginning of the game
 $(".start").on("click", function () {
-
     trivia.startGame();
     $(".start").hide();
 
 })
-
+//Click option 1 passes answer and option to checkAnswer function
 $("#option1").on("click", function () {
 
     trivia.checkAnswer(listOfQuestions[currentQueIndex].option1, listOfQuestions[currentQueIndex].answer);
 });
 
+//Click option 2 passes answer and option to checkAnswer function
 $("#option2").on("click", function () {
 
     trivia.checkAnswer(listOfQuestions[currentQueIndex].option2, listOfQuestions[currentQueIndex].answer);
 });
 
+//Click option 3 passes answer and option to checkAnswer function
 $("#option3").on("click", function () {
 
     trivia.checkAnswer(listOfQuestions[currentQueIndex].option3, listOfQuestions[currentQueIndex].answer);
 
-});
-
+});//Click option 4 passes answer and option to checkAnswer function
 $("#option4").on("click", function () {
 
     trivia.checkAnswer(listOfQuestions[currentQueIndex].option4, listOfQuestions[currentQueIndex].answer);
+
+});
+
+//On click calls the reset function to start the game again
+$(".gameover").on("click", function () {
+    trivia.resetGame();
 
 });
 
